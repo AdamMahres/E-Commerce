@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { getProducts } from '../services/api'
-
 import Item from '../components/Item'
 
 
@@ -15,7 +14,10 @@ function Home() {
     const loadProducts = async () => {
       try {
         const data = await getProducts()
-        setProducts(data)
+        
+        setProducts(data.map(item =>(
+          {...item, isAddedToCart:false}
+        )))
       } catch (error) {
         setError(true)
       }finally{
@@ -25,6 +27,7 @@ function Home() {
     loadProducts()
    },[])
 
+ 
 
    return (
     
@@ -33,7 +36,9 @@ function Home() {
         {isloading && <div> Loading ...</div>}
         {error && <div> Error</div>}
         {products.map(product => {
+          console.log(product.isAddedToCart)
           return <Item key={product.id} product={product}/>
+          
         })}
 
    </div>

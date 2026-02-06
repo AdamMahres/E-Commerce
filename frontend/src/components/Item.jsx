@@ -1,6 +1,11 @@
+import { useCartContext } from "../contexts/CartContext"
 
 
 function Item({product}) {
+  const {addToCart} = useCartContext()
+  const handleClick = () => { 
+    addToCart(product)
+   }
   return (
     <div className="flex flex-col bg-white p-4 shadow-lg rounded-lg h-full">
         <div className="flex-1 flex flex-col items-center">
@@ -12,7 +17,7 @@ function Item({product}) {
         <p className="mt-1 text-center text-gray-500">{product.price} DHS</p>
         </div>
         
-        <button className="mt-3 bg-black text-white px-8 py-2 rounded hover:bg-gray-800">Add To Cart</button>
+        <button onClick={handleClick} className="mt-3 bg-black text-white px-8 py-2 rounded hover:bg-gray-800">Add To Cart</button>
     
     </div>
   )
