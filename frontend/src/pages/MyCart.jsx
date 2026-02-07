@@ -1,7 +1,7 @@
 import React from 'react'
 import { useCartContext } from '../contexts/CartContext'
-import Item from '../components/Item'
 import { useNavigate } from 'react-router-dom'
+import CartItem from '../components/CartItem'
 
 
 function MyCart() {
@@ -12,7 +12,7 @@ function MyCart() {
         return (
             <div>
                 {cartItems.map(item => (
-                     isAddedToCart(item.id) && <Item key={item.id} product={item}/>
+                     isAddedToCart(item.id) && <CartItem product={item} key={item.id}/>
                 ))}
             </div>
         )
