@@ -3,7 +3,6 @@ import { getProducts } from '../services/api'
 import Item from '../components/Item'
 
 
-
 function Home() {
    const [error, setError] = useState(false)
    const [products,setProducts] = useState([])
