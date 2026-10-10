@@ -1,22 +1,39 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
+import { useUserContext } from "../contexts/UserContext";
 function SignUp() {
    const navigate = useNavigate();
+   const { setUser } = useUserContext();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
+
+    if(!name.trim()){
+      setError('please enter your name')
+      return
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      setError('please enter a valid email address')
+      return
+    }
+    if(password.length < 6){
+      setError('password must be at least 6 characters')
+      return
+    }
     if(password !== confirmPassword){
       setError('your password is wrong')
       return
     }
 
+    setIsSubmitting(true)
     try {
       const response = await fetch("http://localhost:5000/auth/signup",{
         method:'POST',
@@ -26,17 +43,18 @@ function SignUp() {
         credentials:'include',
         body:JSON.stringify({name,email,password})
       })
-      console.log(response)
       const data = await response.json()
       if(!response.ok){
         setError(data.message)
       }else{
-        navigate("/login")
+        setUser(data)
+        navigate("/")
       }
 
     } catch (error) {
       setError('Something went wrong')
-      console.error(error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
   return (
@@ -82,11 +100,14 @@ function SignUp() {
             className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-black"
           />
 
+          {error && <p className='text-red-600'>{error}</p>}
+
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
+            disabled={isSubmitting}
+            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition disabled:opacity-50"
           >
-            Sign Up
+            {isSubmitting ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
 
